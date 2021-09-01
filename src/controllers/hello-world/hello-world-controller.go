@@ -1,15 +1,29 @@
 package helloworld
 
 import (
-	"encoding/json"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+
+	helloworldrequestmodel "go-auth-module/src/model/request/hello-world"
 )
 
-func HelloWord() {
-	http.HandleFunc("/hello-world", func(rw http.ResponseWriter, r *http.Request) {
-		rw.Header().Set("Content-Type", "application/json")
-		rw.WriteHeader(http.StatusOK)
+func HelloWord(r *gin.Engine) {
+	r.GET("/hello-world", func(c *gin.Context) {
 
-		json.NewEncoder(rw).Encode("{message:'Hello World'}")
+		var message helloworldrequestmodel.HelloWorldRequestModel
+
+		if err := c.ShouldBindJSON(&message); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(200, gin.H{
+			"response": message,
+		})
 	})
+}
+
+func LoadRoutes(r *gin.Engine) {
+	HelloWord(r)
 }

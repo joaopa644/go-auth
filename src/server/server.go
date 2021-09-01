@@ -2,17 +2,15 @@ package server
 
 import (
 	"go-auth-module/src/routes"
-	"log"
-	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func StartServer() {
 
-	routes.ConfigureRoutes()
+	r := gin.Default()
 
-	err := http.ListenAndServe(":3000", nil)
+	routes.ConfigureRoutes(r)
 
-	if err != nil {
-		log.Fatalf("Could not start server: %s\n", err.Error())
-	}
+	r.Run(":3000")
 }
